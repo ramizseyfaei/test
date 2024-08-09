@@ -1,0 +1,78 @@
+.customer-form{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+}
+
+form>div{
+    margin: 25px;
+}
+form input{
+    margin: 0 20px;
+    border: 3px solid black;
+}
+
+form>:nth-child(4){
+    display: flex;
+    justify-content: center;
+}
+div>button{
+    margin: 15px;
+    width: 35%;
+    height: 30px;
+}
+.customer-form {
+  position: fixed; /* Ekranın herhangi bir yerinde sabit kalmasını sağlar */
+  top: 50%; /* Ekranın ortasına hizalar */
+  left: 50%; /* Ekranın ortasına hizalar */
+  transform: translate(-50%, -50%); /* Merkezi konumlandırma için kaydırma */
+  background: white; /* Form arka plan rengi */
+  padding: 20px; /* İç boşluk */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Gölge efekti */
+  z-index: 1000; /* Üst katmanda görünür */
+  border-radius: 8px; /* Köşe yuvarlama */
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3); /* Koyu arka plan */
+  z-index: 999; /* Formun arkasında görünür */
+}
+
+/* CustomerForm.css */
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="tel"],
+.form-group label {
+  margin-right: 10px;
+  height: 25px;
+}
+.form-group input[type="radio"]{
+  margin-right: 18px;
+  margin-bottom: 5px;
+
+}
+
+
+.error {
+  color: red;
+  font-size: 0.9em;
+  white-space: nowrap; /* Uyarı mesajı tek satırda kalsın */
+  margin-left: 10px; /* Input ile uyarı arasında boşluk bırak */
+}
+
+.birthdate{
+  width: 164px;
+}

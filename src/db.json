@@ -1,0 +1,45 @@
+{
+  "customers": [
+    {
+      "id": "c5fa",
+      "firstname": "mert",
+      "surname": "duran",
+      "name": "mert duran",
+      "gender": "Male",
+      "birthdate": "2001-05-15",
+      "gsm": "+905555555555",
+      "email": "mert.duran@gmail.com"
+    },
+    {
+      "id": "d833",
+      "firstname": "beril",
+      "surname": "erdinç",
+      "gender": "Female",
+      "birthdate": "2000-02-25",
+      "gsm": "+905555555555",
+      "email": "berilsari@gmail.com",
+      "index": 1,
+      "name": "beril erdinç"
+    },
+    {
+      "id": "8007",
+      "firstname": "muhammed",
+      "surname": "demirci",
+      "name": "muhammed demirci",
+      "gender": "Male",
+      "birthdate": "2001-05-15",
+      "gsm": "+905438142722",
+      "email": "muhammeddemrci@example.com"
+    },
+    {
+      "id": "ca40",
+      "firstname": "deniz",
+      "surname": "efe",
+      "name": "deniz efe",
+      "gender": "Male",
+      "birthdate": "2000-02-12",
+      "gsm": "+905555555555",
+      "email": "denizefe@example.com"
+    }
+  ]
+}
