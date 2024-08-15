@@ -1,10 +1,11 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { FaEdit } from "react-icons/fa";
-import { RiDeleteBin5Fill } from "react-icons/ri";
 import axios from "axios";
-import "./CustomerList.css";
+import styles from "./CustomerList.module.css";
 import CustomerForm from "./CustomerForm";
 import CustomerPopup from "./CustomerPopup";
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 const CustomerList = () => {
   const [datas, setDatas] = useState([]);
@@ -12,11 +13,12 @@ const CustomerList = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [customerIndexToDelete, setCustomerIndexToDelete] = useState(null);
   const [editCustomerData, setEditCustomerData] = useState(null);
+  const BASE_URL = "http://localhost:3001/customers"
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/customers");
+        const response = await axios.get(`${BASE_URL}`);
         setDatas(response.data);
       } catch (error) {
         console.error("There was an error fetching the customers!", error);
@@ -29,7 +31,7 @@ const CustomerList = () => {
   const addCustomer = async (newCustomer) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/customers",
+        `${BASE_URL}`,
         newCustomer
       );
       setDatas([...datas, response.data]);
@@ -41,7 +43,7 @@ const CustomerList = () => {
   const updateCustomer = async (index, updatedCustomer) => {
     try {
       await axios.put(
-        `http://localhost:3001/customers/${datas[index].id}`,
+        `${BASE_URL}/${datas[index].id}`,
         updatedCustomer
       );
       const updatedDatas = datas.map((customer, i) =>
@@ -55,7 +57,7 @@ const CustomerList = () => {
 
   const deleteCustomer = async (index) => {
     try {
-      await axios.delete(`http://localhost:3001/customers/${datas[index].id}`);
+      await axios.delete(`${BASE_URL}/${datas[index].id}`);
       const updatedDatas = datas.filter((_, i) => i !== index);
       setDatas(updatedDatas);
     } catch (error) {
@@ -93,11 +95,10 @@ const CustomerList = () => {
 
   return (
     <Fragment>
-      <div className="customer-list">
-        <button className="customer-list-button" onClick={toggleFormVisibility}>
+      <div className={styles["customer-list"]}>
+        <Button onClick={toggleFormVisibility} variant="outlined">
           Create New
-        </button>
-
+        </Button>
         <table>
           <thead>
             <tr>
@@ -115,9 +116,21 @@ const CustomerList = () => {
                 <td>{data.gender}</td>
                 <td>{data.birthdate}</td>
                 <td>{data.gsm}</td>
-                <td className="operation">
-                  <FaEdit onClick={() => handleEditClick(index)} />
-                  <RiDeleteBin5Fill onClick={() => handleDeleteClick(index)} />
+                <td className={styles["operation"]}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleEditClick(index)}
+                    sx={{ marginRight: 2 }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={() => handleDeleteClick(index)}
+                    variant="outlined"
+                    startIcon={<DeleteIcon />}
+                  >
+                    Delete
+                  </Button>
                 </td>
               </tr>
             ))}

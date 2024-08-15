@@ -5,11 +5,11 @@
   margin: 45px 15px;
   width: 100%;
 }
-.customer-list-button {
-  width: 9%;
+.customer-list>button {
+  width: 10%;
   height: 35px;
   float: right;
-  border: 5px solid black;
+
 }
 table {
   margin: 20px auto;
@@ -36,9 +36,6 @@ tr:nth-child(even) {
 .operation {
   text-align: center;
 }
-.operation svg {
-  font-size: 24px;
-  cursor: pointer;
-}
+
 
 

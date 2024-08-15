@@ -1,5 +1,7 @@
-import React, { useState, useEffect, Fragment } from "react";
-import "./CustomerForm.css";
+import React, { useState, Fragment } from "react";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import styles from "./CustomerForm.module.css";
 
 const CustomerForm = ({
   isShowForm,
@@ -20,45 +22,80 @@ const CustomerForm = ({
 
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (editCustomerData) {
-      const { name, ...rest } = editCustomerData;
+      const { name, birthdate, ...rest } = editCustomerData;
       const [firstname, ...surnameParts] = name.split(" ");
       const surname = surnameParts.join(" ");
-      setFormData({ ...rest, firstname, surname });
+      setFormData({ ...rest, firstname, surname, birthdate });
     }
   }, [editCustomerData]);
 
-  useEffect(() => {
-    setFormData((prevData) => ({
-      ...prevData,
-      name: `${prevData.firstname} ${prevData.surname}`,
-    }));
-  }, [formData.firstname, formData.surname]);
 
-  if (!isShowForm) {
-    return null;
+const validateForm = () => {
+  const newErrors = {};
+
+  if (!formData.firstname.trim()) newErrors.firstname = true;
+  if (!formData.surname.trim()) newErrors.surname = true;
+  if (!formData.gender) newErrors.gender = true;
+  if (!formData.birthdate.trim()) newErrors.birthdate = true;
+  if (!formData.gsm.trim()) newErrors.gsm = true;
+  if (!formData.email.trim()) newErrors.email = true;
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (formData.email && !emailPattern.test(formData.email)) {
+    newErrors.email = true;
   }
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.firstname.trim()) newErrors.firstname = "Required";
-    if (!formData.surname.trim()) newErrors.surname = "Required";
-    if (!formData.gender) newErrors.gender = "Required";
-    if (!formData.birthdate.trim()) newErrors.birthdate = "Required";
-    if (!formData.gsm.trim()) newErrors.gsm = "Required";
-    if (!formData.email.trim()) newErrors.email = "Required";
+  const gsmPattern = /^\+90\d{10}$/;
+  if (formData.gsm && !gsmPattern.test(formData.gsm)) {
+    newErrors.gsm = true;
+  }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const today = new Date();
+  const birthDate = new Date(formData.birthdate);
+  const age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+
+  if (
+    age < 18 ||
+    (age === 18 && monthDifference < 0) ||
+    (age === 18 &&
+      monthDifference === 0 &&
+      today.getDate() < birthDate.getDate())
+  ) {
+    newErrors.birthdate = true;
+  }
+
+  if (age > 100) {
+    newErrors.birthdate = true;
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
+
+    setFormData((prevData) => {
+      const updatedData = {
+        ...prevData,
+        [name]: value,
+      };
+      return {
+        ...updatedData,
+        name: `${updatedData.firstname} ${updatedData.surname}`,
+      };
     });
+
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: false,
+      });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -72,7 +109,6 @@ const CustomerForm = ({
       setIsShowForm(false);
       resetForm();
     }
-    console.log(formData)
   };
 
   const toggleCancel = () => {
@@ -93,85 +129,105 @@ const CustomerForm = ({
     setErrors({});
   };
 
+  if (!isShowForm) {
+    return null;
+  }
+
   return (
     <Fragment>
-      <div className="overlay" onClick={toggleCancel}></div>
-      <div className="customer-form">
+      <div className={styles["overlay"]} onClick={toggleCancel}></div>
+      <div className={styles["customer-form"]}>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <input
-              type="text"
-              placeholder="Firstname"
+          <div className={styles["form-group"]}>
+            <TextField
+              label="Firstname"
               name="firstname"
               value={formData.firstname}
               onChange={handleChange}
+              error={!!errors.firstname}
+              className={errors.firstname ? styles["error-input"] : ""}
+              fullWidth
+              sx={{ marginRight: "25px" }}
             />
-            {errors.firstname && (
-              <span className="error">{errors.firstname}</span>
-            )}
-            <input
-              type="text"
-              placeholder="Surname"
+            <TextField
+              label="Surname"
               name="surname"
               value={formData.surname}
               onChange={handleChange}
+              error={!!errors.surname}
+              className={errors.surname ? styles["error-input"] : ""}
+              fullWidth
             />
-            {errors.surname && <span className="error">{errors.surname}</span>}
           </div>
-          <div className="form-group">
-            <input
-            className="birthdate"
-              type="date"
-              placeholder="BirthDate"
+          <div className={styles["form-group"]}>
+            <TextField
+              label="Birthdate"
               name="birthdate"
+              type="date"
               value={formData.birthdate}
               onChange={handleChange}
+              error={!!errors.birthdate}
+              className={`${styles["form-control"]} ${
+                errors.birthdate ? styles["error-input"] : ""
+              }`}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              fullWidth
             />
-            {errors.birthdate && (
-              <span className="error">{errors.birthdate}</span>
-            )}
-            <input
-              type="radio"
-              name="gender"
-              value="Male"
-              checked={formData.gender === "Male"}
-              onChange={handleChange}
-            />
-            <label>Male</label>
-            <input
-              type="radio"
-              name="gender"
-              value="Female"
-              checked={formData.gender === "Female"}
-              onChange={handleChange}
-            />
-            <label>Female</label>
-            {errors.gender && <span className="error">{errors.gender}</span>}
+            <div>
+              <input
+                type="radio"
+                name="gender"
+                value="Male"
+                checked={formData.gender === "Male"}
+                onChange={handleChange}
+              />
+              <label>Male</label>
+              <input
+                type="radio"
+                name="gender"
+                value="Female"
+                checked={formData.gender === "Female"}
+                onChange={handleChange}
+              />
+              <label>Female</label>
+            </div>
           </div>
-          <div className="form-group">
-            <input
-              type="tel"
-              pattern="\+90\d{10}"
-              placeholder="+905555555555"
+          <div className={styles["form-group"]}>
+            <TextField
+              label="GSM"
               name="gsm"
+              type="tel"
               value={formData.gsm}
               onChange={handleChange}
+              error={!!errors.gsm}
+              className={errors.gsm ? styles["error-input"] : ""}
+              fullWidth
+              sx={{ marginRight: "25px" }}
             />
-            {errors.gsm && <span className="error">{errors.gsm}</span>}
-            <input
-              type="text"
-              placeholder="Email"
+            <TextField
+              label="Email"
               name="email"
               value={formData.email}
               onChange={handleChange}
+              error={!!errors.email}
+              className={errors.email ? styles["error-input"] : ""}
+              fullWidth
             />
-            {errors.email && <span className="error">{errors.email}</span>}
           </div>
           <div>
-            <button type="submit">Save</button>
-            <button type="button" onClick={toggleCancel}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="success"
+              sx={{ marginRight: 2 }}
+            >
+              Success
+            </Button>
+            <Button onClick={toggleCancel} variant="outlined" color="error">
               Cancel
-            </button>
+            </Button>
           </div>
         </form>
       </div>

@@ -1,17 +1,22 @@
-// ConfirmationPopup.js
 import React from "react";
-import "./CustomerPopup.css";
+import styles from "./CustomerPopup.module.css";
+import Button from '@mui/material/Button';
 
-const ConfirmationPopup = ({ onConfirm, onCancel }) => {
+
+const CustomerPopup = ({ onConfirm, onCancel }) => {
   return (
-    <div className="confirmation-popup">
-      <div className="popup-content">
+    <div className={styles["confirmation-popup"]}>
+      <div className={styles["popup-content"]}>
         <p>Are you sure to delete this record?</p>
-        <button onClick={onConfirm}>Yes</button>
-        <button onClick={onCancel}>No</button>
+        <Button onClick={onConfirm} variant="contained" color="success">
+          Yes
+        </Button>
+        <Button onClick={onCancel} variant="outlined" color="error">
+          No
+        </Button>
       </div>
     </div>
   );
 };
 
-export default ConfirmationPopup;
+export default CustomerPopup;
