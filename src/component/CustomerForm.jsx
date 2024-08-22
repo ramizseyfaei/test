@@ -1,6 +1,8 @@
 import React, { useState, Fragment } from "react";
 import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import styles from "./CustomerForm.module.css";
 
 const CustomerForm = ({
@@ -18,6 +20,7 @@ const CustomerForm = ({
     birthdate: "",
     gsm: "",
     email: "",
+    imageUrl: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -31,50 +34,48 @@ const CustomerForm = ({
     }
   }, [editCustomerData]);
 
+  const validateForm = () => {
+    const newErrors = {};
 
-const validateForm = () => {
-  const newErrors = {};
+    if (!formData.firstname.trim()) newErrors.firstname = true;
+    if (!formData.surname.trim()) newErrors.surname = true;
+    if (!formData.gender) newErrors.gender = true;
+    if (!formData.birthdate.trim()) newErrors.birthdate = true;
+    if (!formData.gsm.trim()) newErrors.gsm = true;
+    if (!formData.email.trim()) newErrors.email = true;
 
-  if (!formData.firstname.trim()) newErrors.firstname = true;
-  if (!formData.surname.trim()) newErrors.surname = true;
-  if (!formData.gender) newErrors.gender = true;
-  if (!formData.birthdate.trim()) newErrors.birthdate = true;
-  if (!formData.gsm.trim()) newErrors.gsm = true;
-  if (!formData.email.trim()) newErrors.email = true;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formData.email && !emailPattern.test(formData.email)) {
+      newErrors.email = true;
+    }
 
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (formData.email && !emailPattern.test(formData.email)) {
-    newErrors.email = true;
-  }
+    const gsmPattern = /^\+90\d{10}$/;
+    if (formData.gsm && !gsmPattern.test(formData.gsm)) {
+      newErrors.gsm = true;
+    }
 
-  const gsmPattern = /^\+90\d{10}$/;
-  if (formData.gsm && !gsmPattern.test(formData.gsm)) {
-    newErrors.gsm = true;
-  }
+    const today = new Date();
+    const birthDate = new Date(formData.birthdate);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
 
-  const today = new Date();
-  const birthDate = new Date(formData.birthdate);
-  const age = today.getFullYear() - birthDate.getFullYear();
-  const monthDifference = today.getMonth() - birthDate.getMonth();
+    if (
+      age < 18 ||
+      (age === 18 && monthDifference < 0) ||
+      (age === 18 &&
+        monthDifference === 0 &&
+        today.getDate() < birthDate.getDate())
+    ) {
+      newErrors.birthdate = true;
+    }
 
-  if (
-    age < 18 ||
-    (age === 18 && monthDifference < 0) ||
-    (age === 18 &&
-      monthDifference === 0 &&
-      today.getDate() < birthDate.getDate())
-  ) {
-    newErrors.birthdate = true;
-  }
+    if (age > 100) {
+      newErrors.birthdate = true;
+    }
 
-  if (age > 100) {
-    newErrors.birthdate = true;
-  }
-
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};
-
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,6 +96,20 @@ const validateForm = () => {
         ...errors,
         [name]: false,
       });
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prevData) => ({
+          ...prevData,
+          imageUrl: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -125,6 +140,7 @@ const validateForm = () => {
       birthdate: "",
       gsm: "",
       email: "",
+      imageUrl: "",
     });
     setErrors({});
   };
@@ -132,6 +148,18 @@ const validateForm = () => {
   if (!isShowForm) {
     return null;
   }
+
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
 
   return (
     <Fragment>
@@ -218,14 +246,30 @@ const validateForm = () => {
           </div>
           <div>
             <Button
+              component="label"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+              sx={{height:'45px'}}
+            >
+              Upload file
+              <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+            </Button>
+            <Button
               type="submit"
               variant="contained"
               color="success"
-              sx={{ marginRight: 2 }}
+              sx={{ marginLeft:'2px', marginRight:'2px', height: "45px", fontSize: "17px" }}
             >
-              Success
+              Save
             </Button>
-            <Button onClick={toggleCancel} variant="outlined" color="error">
+            <Button
+              onClick={toggleCancel}
+              variant="outlined"
+              color="error"
+              sx={{ height: "45px", fontSize: "17px" }}
+            >
               Cancel
             </Button>
           </div>

@@ -1,3 +1,2 @@
 Müşteri bilgilerimizin yer aldığı tabloyu açabilmek için gerekli olan adımlar:
-    1- json-server --watch src/db.json --port 3001  komutunu komut satırında çalıştırarak json sever kurulumu yapmak.
-    2- Başka bir komut satırı penceresi kullanarak npm run dev komut satırıyla projeyi ayağa kaldırmak.
+    1- komut satırı penceresi kullanarak npm run dev komut satırıyla projeyi ayağa kaldırmak.

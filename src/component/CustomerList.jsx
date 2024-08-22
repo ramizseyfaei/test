@@ -1,10 +1,12 @@
-import React, { Fragment, useState, useEffect } from "react";
+import  { Fragment, useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./CustomerList.module.css";
 import CustomerForm from "./CustomerForm";
 import CustomerPopup from "./CustomerPopup";
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useSelector } from "react-redux";
+import {BaseUrl} from '../redux/apiSlice'
 
 
 const CustomerList = () => {
@@ -13,12 +15,12 @@ const CustomerList = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [customerIndexToDelete, setCustomerIndexToDelete] = useState(null);
   const [editCustomerData, setEditCustomerData] = useState(null);
-  const BASE_URL = "http://localhost:3001/customers"
+  const baseUrl = useSelector(BaseUrl)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}`);
+        const response = await axios.get(`${baseUrl + "/customers"}`);
         setDatas(response.data);
       } catch (error) {
         console.error("There was an error fetching the customers!", error);
@@ -26,12 +28,12 @@ const CustomerList = () => {
     };
 
     fetchData();
-  }, []);
+  }, [baseUrl]);
 
   const addCustomer = async (newCustomer) => {
     try {
       const response = await axios.post(
-        `${BASE_URL}`,
+        `${baseUrl + "/customers"}`,
         newCustomer
       );
       setDatas([...datas, response.data]);
@@ -43,7 +45,7 @@ const CustomerList = () => {
   const updateCustomer = async (index, updatedCustomer) => {
     try {
       await axios.put(
-        `${BASE_URL}/${datas[index].id}`,
+        `${baseUrl + "/customers"}/${datas[index].id}`,
         updatedCustomer
       );
       const updatedDatas = datas.map((customer, i) =>
@@ -57,7 +59,7 @@ const CustomerList = () => {
 
   const deleteCustomer = async (index) => {
     try {
-      await axios.delete(`${BASE_URL}/${datas[index].id}`);
+      await axios.delete(`${baseUrl + "/customers"}/${datas[index].id}`);
       const updatedDatas = datas.filter((_, i) => i !== index);
       setDatas(updatedDatas);
     } catch (error) {
