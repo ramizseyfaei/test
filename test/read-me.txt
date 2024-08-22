@@ -1,2 +1,0 @@
-Müşteri bilgilerimizin yer aldığı tabloyu açabilmek için gerekli olan adımlar:
-    1- komut satırı penceresi kullanarak npm run dev komut satırıyla projeyi ayağa kaldırmak.
