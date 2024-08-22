@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+.header {
+  display: flex;
+  background-color: #e7f0ff;
+  height: 100px;
+}
+.header > :nth-child(1) {
+  width: 200px;
+  margin: 15px 0 0 20px;
+}
+.header > :nth-child(2) {
+  margin: auto;
+}
+.header > :nth-child(3) {
+  width: 200px;
+  margin-top: 44px;
+  margin-right: 20px;
+}
